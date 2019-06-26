@@ -1,0 +1,211 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace week5day2Peliculas
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int opcion;
+            Pelicula peli = new Pelicula();
+            Pelicula[] peliculas = new Pelicula[4];
+            peliculas[0] = new Pelicula(1, "película 1", "Desc. Película 1", 2015, 6, 2);
+            peliculas[1] = new Pelicula(2, "película 2", "Desc. Película 2", 2018, 3, 4);
+            peliculas[2] = new Pelicula(3, "película 3", "Desc. Película 3", 2014, 0, 5);
+            peliculas[3] = new Pelicula(4, "película 4", "Desc. Película 4", 2012, 1, 3);
+
+            do
+            {
+                Console.WriteLine("==========================");
+                Console.WriteLine("====Venta de Películas====");
+                Console.WriteLine("==========================");
+                Console.WriteLine("1. Ver películas disponibles");
+                Console.WriteLine("2. Verificar disponibilidad");
+                Console.WriteLine("3. Comprar película");
+                Console.WriteLine("4. Devolver película");
+                Console.WriteLine("5. Mostrar las más populares");
+                Console.WriteLine("6. Salir");
+                Console.Write("Ingrese una opción: ");
+                opcion = int.Parse(Console.ReadLine());
+
+                switch (opcion)
+                {
+                    case 1:
+                        peli.listaDisponibles(peliculas);
+                        break;
+                    case 2:
+                        int id;
+                        Console.WriteLine();
+                        Console.Write("Ingrese el ID de la Pelicula a buscar: ");
+                        id = int.Parse(Console.ReadLine());
+
+                        if (peli.verDisponible(id, peliculas))
+                        {
+                            Console.WriteLine("Hay disponibilidad de la película con ID {0}", id);
+                            Console.WriteLine();
+
+                        }
+                        else
+                        {
+                            Console.WriteLine("NO hay disponibilidad de la Película con ID {0}", id);
+                            Console.WriteLine();
+                        }
+                        break;
+                    case 3:
+                        int id2;
+                        int cantidad;
+                        Console.WriteLine();
+                        Console.Write("Ingrese el ID del Producto: ");
+                        id2 = int.Parse(Console.ReadLine());
+                        Console.Write("Ingrese la cantidad: ");
+                        cantidad = int.Parse(Console.ReadLine());
+                        peli.reducirStock(peliculas, id2, cantidad);
+                        break;
+                    case 4:
+                        int id3;
+                        int cantidad2;
+                        Console.WriteLine();
+                        Console.Write("Ingrese el ID del Producto: ");
+                        id3 = int.Parse(Console.ReadLine());
+                        Console.Write("Ingrese la cantidad a devolver: ");
+                        cantidad2 = int.Parse(Console.ReadLine());
+                        peli.aumentarStock(peliculas, id3, cantidad2);
+                        break;
+                    case 5:
+                        peli.listaXPopularidad(peliculas);
+                        break;
+                    default:
+                        break;
+                }
+
+            } while (opcion != 6);
+        }
+    }
+}
+
+class Pelicula
+{
+    public int id;
+    public string nombre;
+    public string descripcion;
+    public int anio;
+    //public bool disponible;
+    public int stock;
+    public int popularidad;
+
+    public Pelicula()
+    {
+        this.id = 0;
+        this.nombre = "Sin nombre";
+        this.descripcion = "Sin descripción";
+        this.anio = 0;
+        this.stock = 0;
+    }
+
+    public Pelicula(int id, string nombre, string descripcion, int anio, int stock, int popularidad)
+    {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.anio = anio;
+        this.stock = stock;
+        this.popularidad = popularidad;
+    }
+
+    public void listaDisponibles(Pelicula[] lista)
+    {
+        Console.WriteLine();
+        for (int i = 0; i < lista.Length; i++)
+        {
+            if (lista[i].stock > 0)
+            {
+                Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>");
+                Console.WriteLine("ID: " + lista[i].id);
+                Console.WriteLine("Película: " + lista[i].nombre);
+                Console.WriteLine("Reseña: " + lista[i].descripcion);
+                Console.WriteLine("Año: " + lista[i].anio);
+                Console.WriteLine("Stock: " + lista[i].stock);
+                Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>");
+            }
+        }
+    }
+
+    public bool verDisponible(int id, Pelicula[] lista)
+    {
+        for (int i = 0; i < lista.Length; i++)
+        {
+            if (lista[i].id == id)
+            {
+                if (lista[i].stock > 0)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public void reducirStock(Pelicula[] lista, int id, int cantidad)
+    {
+        //Pelicula peli = null;
+        for (int i = 0; i < lista.Length; i++)
+        {
+            if (lista[i].id == id)
+            {
+                if (cantidad > lista[i].stock)
+                {
+                    Console.WriteLine("Error!, supera el stock actual. Vuelve a intentarlo");
+                    Console.WriteLine();
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Stock anterior: {0}", lista[i].stock);
+                    lista[i].stock = lista[i].stock - cantidad;
+                    Console.WriteLine("Stock actual: {0}", lista[i].stock);
+                    break;
+
+                }
+            }
+        }
+
+    }
+
+    public void aumentarStock(Pelicula[] lista, int id, int cantidad)
+    {
+        for (int i = 0; i < lista.Length; i++)
+        {
+            if (lista[i].id == id)
+            {
+                Console.WriteLine("Stock anterior: {0}", lista[i].stock);
+                lista[i].stock = lista[i].stock + cantidad;
+                Console.WriteLine("Stock actual: {0}", lista[i].stock);
+                break;
+            }
+        }
+    }
+
+    public void listaXPopularidad(Pelicula[] lista)
+    {
+        Console.WriteLine();
+        Console.WriteLine("======Películas Populares======");
+        for (int i = 0; i < lista.Length; i++)
+        {
+            if (lista[i].popularidad >= 4)
+            {
+                Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                Console.WriteLine("ID: {0}", lista[i].id);
+                Console.WriteLine("Película: {0}", lista[i].nombre);
+                Console.WriteLine("Populartidad: {0}", lista[i].popularidad);
+                Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            }
+        }
+    }
+}
+
+
+
+
+
